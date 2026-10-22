@@ -56,10 +56,18 @@ if ! git apply --reverse --check "$ROOT/patches/uefi-parent.diff" 2>/dev/null; t
 fi
 
 # EDK2's build report reads sources with the locale codec, which aborts on
-# non-UTF-8 bytes (Windows/cp936). Harmless to apply everywhere.
-if ! git -C Mu_Basecore apply --reverse --check "$ROOT/patches/Mu_Basecore-BuildReport.patch" 2>/dev/null; then
-  git -C Mu_Basecore apply "$ROOT/patches/Mu_Basecore-BuildReport.patch"
-fi
+# non-UTF-8 bytes. Only Windows/cp936 is affected, so the patch is applied there
+# and skipped everywhere else.
+case "$(uname -s)" in
+  MINGW*|MSYS*|CYGWIN*)
+    if ! git -C Mu_Basecore apply --reverse --check "$ROOT/patches/Mu_Basecore-BuildReport.patch" 2>/dev/null; then
+      git -C Mu_Basecore apply "$ROOT/patches/Mu_Basecore-BuildReport.patch"
+    fi
+    ;;
+  *)
+    echo "skipping the Windows-only build report patch"
+    ;;
+esac
 
 log "building $TARGET"
 # EDK2's CLANGPDB toolchain wants the aarch64 binutils prefix on Linux hosts.
