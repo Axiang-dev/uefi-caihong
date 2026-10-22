@@ -22,8 +22,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             build-essential git python3 python3-venv \
             clang llvm lld uuid-dev nasm \
-            gcc-aarch64-linux-gnu acpica-tools device-tree-compiler \
-            mono-devel ca-certificates-mono
+            gcc-aarch64-linux-gnu acpica-tools device-tree-compiler
 
       - name: Build the boot image
         run: ./scripts/build.sh "$RUNNER_TEMP/work" RELEASE
