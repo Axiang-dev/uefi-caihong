@@ -55,6 +55,13 @@ if ! git apply --reverse --check "$ROOT/patches/uefi-parent.diff" 2>/dev/null; t
   git apply "$ROOT/patches/uefi-parent.diff"
 fi
 
+# The AArch64 CLANGPDB toolchain never invokes nasm, but the EDK2 self
+# describing environment still insists on fetching it through NuGet, which runs
+# on mono here and fails. Dropping the extdep removes the requirement.
+if [ "$(uname -s)" = "Linux" ]; then
+  rm -f Mu_Basecore/BaseTools/Bin/nasm_ext_dep.yaml
+fi
+
 # EDK2's build report reads sources with the locale codec, which aborts on
 # non-UTF-8 bytes. Only Windows/cp936 is affected, so the patch is applied there
 # and skipped everywhere else.
