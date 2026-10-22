@@ -25,7 +25,7 @@ jobs:
             gcc-aarch64-linux-gnu acpica-tools device-tree-compiler
 
       - name: Build the boot image
-        run: ./scripts/build.sh "$RUNNER_TEMP/work" RELEASE
+        run: bash ./scripts/build.sh "$RUNNER_TEMP/work" RELEASE
 
       - name: Report
         run: |
